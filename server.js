@@ -83,18 +83,19 @@ app.post("/register", async (req, res) => {
           });
           res.render("register", { errors });
         } else {
-            pool.query()
-            `INSERT INTO users (name, email, password)
-            VALUES ($1, $2, $3)
-            RETURNING id,, password`,
-            [name, email, hashPassword],
-            (err, results) => {
-              if(err){
-                throw new Error(err);
-              } 
-              req.flash("success_msg", "You are now registerred. Please log in");
-              res.redirect('/login');
-            }
+            pool.query(
+              `INSERT INTO users (name, email, password)
+              VALUES ($1, $2, $3)
+              RETURNING id, password`,
+              [name, email, hashPassword],
+              (err, results) => {
+                if(err){
+                  throw new Error(err);
+                } 
+                req.flash("success_msg", "You are now registerred. Please log in");
+                res.redirect('/login');
+              }
+            )
         }
       }
     );
